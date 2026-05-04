@@ -1,0 +1,26 @@
+import { Routes, Route } from 'react-router-dom'
+import Home from '../pages/Home'
+import HostPage from '../pages/HostPage'
+import PlayerPage from '../pages/PlayerPage'
+import CreateQuiz from '../pages/CreateQuiz'
+import JoinGame from '../pages/JoinGame'
+import Lobby from '../pages/Lobby'
+import GameRoom from '../pages/GameRoom'
+import Results from '../pages/Results'
+import Profile from '../pages/Profile'
+
+const AppRoutes = () => (
+  <Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="/host" element={<HostPage />} />
+    <Route path="/player" element={<PlayerPage />} />
+    <Route path="/create" element={<CreateQuiz />} />
+    <Route path="/join" element={<JoinGame />} />
+    <Route path="/lobby" element={<Lobby />} />
+    <Route path="/game" element={<GameRoom />} />
+    <Route path="/results" element={<Results />} />
+    <Route path="/profile" element={<Profile />} />
+  </Routes>
+)
+
+export default AppRoutes
