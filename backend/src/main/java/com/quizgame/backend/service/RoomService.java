@@ -57,15 +57,29 @@ public class RoomService {
 
     @Transactional
     public RoomCreateResponse createRoom(RoomCreateRequest request) {
-        if (request.getQuizId() == null || request.getHostId() == null) {
-            throw new BadRequestException("quizId and hostId are required");
+        if (request.getHostId() == null && (request.getHostName() == null || request.getHostName().isBlank())) {
+            throw new BadRequestException("hostId or hostName is required");
         }
 
-        User host = userRepository.findById(request.getHostId())
-                .orElseThrow(() -> new NotFoundException("Host not found"));
+        User host;
+        if (request.getHostId() != null) {
+            host = userRepository.findById(request.getHostId())
+                    .orElseThrow(() -> new NotFoundException("Host not found"));
+        } else {
+            User newHost = new User();
+            newHost.setName(request.getHostName().trim());
+            newHost.setRole("HOST");
+            host = userRepository.save(newHost);
+        }
 
-        Quiz quiz = quizRepository.findById(request.getQuizId())
-                .orElseThrow(() -> new NotFoundException("Quiz not found"));
+        Quiz quiz;
+        if (request.getQuizId() != null) {
+            quiz = quizRepository.findById(request.getQuizId())
+                    .orElseThrow(() -> new NotFoundException("Quiz not found"));
+        } else {
+            quiz = quizRepository.findTopByOrderByIdDesc()
+                    .orElseThrow(() -> new NotFoundException("No quiz available"));
+        }
 
         Room room = new Room();
         room.setRoomCode(generateRoomCode());
@@ -77,7 +91,7 @@ public class RoomService {
 
         RoomPlayer hostPlayer = new RoomPlayer();
         hostPlayer.setRoom(savedRoom);
-        hostPlayer.setNickname(host.getName() != null ? host.getName() : "Host");
+        hostPlayer.setNickname(host.getName() != null && !host.getName().isBlank() ? host.getName() : "Host");
         hostPlayer.setHost(true);
         hostPlayer.setUser(host);
         hostPlayer.setScore(0);

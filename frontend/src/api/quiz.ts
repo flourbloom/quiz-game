@@ -1,8 +1,8 @@
 // src/api/quiz.ts
-import axios from 'axios';
+import api from './http';
 
-export const createQuiz = (data: any) =>
-  axios.post('/api/quiz', data);
+export const createQuiz = (data: unknown) =>
+  api.post('/api/quiz', data);
 
 export const getQuiz = (quizId: string) =>
-  axios.get(`/api/quiz/${quizId}`);
+  api.get(`/api/quiz/${quizId}`);

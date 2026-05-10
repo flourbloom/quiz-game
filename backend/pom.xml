@@ -29,6 +29,15 @@
 	<properties>
 		<java.version>21</java.version>
 	</properties>
+	<!-- current dependencies -->
+	<!-- spring-boot-starter-data-jpa -->
+	<!-- spring-boot-starter-security -->
+	<!-- spring-boot-starter-web -->
+	<!-- spring-boot-starter-websocket -->
+	<!-- postgresql -->
+	<!-- lombok -->
+	<!-- spring-boot-starter-test -->
+	<!-- spring-security-test -->
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -69,6 +78,9 @@
 		</dependency>
 	</dependencies>
 
+	<!-- Build Configuration -->
+	<!-- spring-boot-maven-plugin -->
+	<!-- maven-compiler-plugin -->
 	<build>
 		<plugins>
 			<plugin>

@@ -9,7 +9,10 @@ function HomePage() {
 
       <div className="mt-6 grid gap-3 text-center">
         <div className="flex flex-wrap justify-center gap-3">
-          <Link className="rounded bg-blue-600 px-4 py-2 text-white" to="/create">
+          <Link className="rounded bg-blue-600 px-4 py-2 text-white" to="/create-room">
+            Create room
+          </Link>
+          <Link className="rounded bg-blue-500 px-4 py-2 text-white" to="/create">
             Create quiz
           </Link>
           <Link className="rounded bg-green-600 px-4 py-2 text-white" to="/join">

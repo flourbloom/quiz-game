@@ -3,6 +3,7 @@ import Home from '../pages/Home'
 import HostPage from '../pages/HostPage'
 import PlayerPage from '../pages/PlayerPage'
 import CreateQuiz from '../pages/CreateQuiz'
+import CreateRoom from '../pages/CreateRoom'
 import JoinGame from '../pages/JoinGame'
 import Lobby from '../pages/Lobby'
 import GameRoom from '../pages/GameRoom'
@@ -15,6 +16,7 @@ const AppRoutes = () => (
     <Route path="/host" element={<HostPage />} />
     <Route path="/player" element={<PlayerPage />} />
     <Route path="/create" element={<CreateQuiz />} />
+    <Route path="/create-room" element={<CreateRoom />} />
     <Route path="/join" element={<JoinGame />} />
     <Route path="/lobby" element={<Lobby />} />
     <Route path="/game" element={<GameRoom />} />

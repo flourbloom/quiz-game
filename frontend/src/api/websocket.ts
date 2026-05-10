@@ -1,6 +1,12 @@
 // src/api/websocket.ts
-export const WS_URL = 'ws://localhost:8080/ws';
+import { Client } from '@stomp/stompjs';
 
-export const connectWebSocket = () => {
-  return new WebSocket(WS_URL);
-};
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const WS_BASE = API_BASE_URL.replace(/^http/, 'ws');
+export const WS_URL = `${WS_BASE}/ws/websocket`;
+
+export const createStompClient = () =>
+  new Client({
+    brokerURL: WS_URL,
+    reconnectDelay: 3000,
+  });
