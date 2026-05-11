@@ -1,4 +1,4 @@
 declare module 'sockjs-client' {
-	const SockJS: any;
+	const SockJS: unknown;
 	export default SockJS;
 }

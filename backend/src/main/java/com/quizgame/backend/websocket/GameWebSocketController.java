@@ -20,6 +20,10 @@ public class GameWebSocketController {
         this.gameService = gameService;
     }
 
+    // Note: WebSocket controller receives STOMP messages and forwards them
+    // to the service layer (Service -> Repository -> Database). This
+    // follows the layered flow but via message handlers instead of HTTP.
+
     @MessageMapping("/room/{roomCode}/join")
     public void playerJoin(@DestinationVariable String roomCode, PlayerJoinMessage message) {
         if (message != null && message.getPlayerId() != null) {

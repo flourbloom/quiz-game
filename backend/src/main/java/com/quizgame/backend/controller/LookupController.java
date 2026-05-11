@@ -20,6 +20,9 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class LookupController {
 
+    // Layered flow: Controller -> Service -> Repository -> Database
+    // Lookup endpoints delegate to LookupService which reads from repositories.
+
     private final LookupService lookupService;
 
     public LookupController(LookupService lookupService) {

@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class RoomController {
 
+    // Layered flow: Controller -> Service -> Repository -> Database
+    // This controller delegates all business logic to RoomService.
+
     private final RoomService roomService;
 
     public RoomController(RoomService roomService) {
