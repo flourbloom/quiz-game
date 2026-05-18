@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class AiQuizGenerationResponse {
     private String title;
+    private String description;
     private List<AiQuestionDTO> questions;
 
     @Getter

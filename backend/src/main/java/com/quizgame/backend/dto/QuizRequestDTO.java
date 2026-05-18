@@ -1,10 +1,13 @@
 package com.quizgame.backend.dto;
 
+import java.util.List;
+
 public class QuizRequestDTO {
 
     private String title;
     private String description;
     private Long creatorId;
+    private List<QuestionRequestDTO> questions;
 
     public QuizRequestDTO() {}
 
@@ -26,6 +29,10 @@ public class QuizRequestDTO {
         return creatorId;
     }
 
+    public List<QuestionRequestDTO> getQuestions() {
+        return questions;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -36,5 +43,9 @@ public class QuizRequestDTO {
 
     public void setCreatorId(Long creatorId) {
         this.creatorId = creatorId;
+    }
+
+    public void setQuestions(List<QuestionRequestDTO> questions) {
+        this.questions = questions;
     }
 }

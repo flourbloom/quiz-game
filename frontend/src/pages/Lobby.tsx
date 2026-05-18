@@ -4,16 +4,24 @@ import PlayerList from '../components/lobby/PlayerList'
 import RoomCode from '../components/lobby/RoomCode'
 import DocumentUploadModal from '../components/game/DocumentUploadModal'
 import GeneratedQuizEditor from '../components/game/GeneratedQuizEditor'
+import { createQuiz } from '../api/quiz'
 import { useRoomStore } from '../store/roomStore'
 import { useGameStore } from '../store/gameStore'
+import { useAuthStore } from '../store/authStore'
 import { getRoomDetails } from '../api/room'
 import { createStompClient } from '../api/websocket'
 import type { Player } from '../types/player'
-import { QuestionType, type AiQuizGenerationResponse, type Quiz } from '../types/quiz'
+import {
+  QuestionType,
+  type AiQuizGenerationResponse,
+  type Quiz,
+  type SaveQuizRequest,
+} from '../types/quiz'
 
 const convertAiResponseToQuiz = (aiResponse: AiQuizGenerationResponse): Quiz => ({
   id: Date.now().toString(),
   title: aiResponse.title,
+  description: aiResponse.description || '',
   questions: aiResponse.questions.map((question, index) => ({
     id: `q-${index}`,
     text: question.question,
@@ -23,15 +31,39 @@ const convertAiResponseToQuiz = (aiResponse: AiQuizGenerationResponse): Quiz => 
           (choice): choice is string => Boolean(choice)
         )
       : undefined,
-    answer: question.type === QuestionType.MCQ
-      ? question.correctAnswer || ''
-      : question.correctAnswer || '',
+    answer: resolveCorrectAnswer(question),
     difficulty: question.difficulty as any,
   })),
 })
 
+const resolveCorrectAnswer = (question: AiQuizGenerationResponse['questions'][number]) => {
+  const correctAnswer = (question.correctAnswer || '').trim()
+
+  if (!correctAnswer) {
+    return ''
+  }
+
+  const choices = [question.answer1, question.answer2, question.answer3, question.answer4]
+    .map((choice) => choice?.trim() || '')
+
+  const lowerAnswer = correctAnswer.toLowerCase()
+  if (['a', 'b', 'c', 'd'].includes(lowerAnswer)) {
+    const index = lowerAnswer.charCodeAt(0) - 'a'.charCodeAt(0)
+    return choices[index] || correctAnswer
+  }
+
+  if (/^answer[1-4]$/.test(lowerAnswer)) {
+    const index = Number.parseInt(lowerAnswer.slice(6), 10) - 1
+    return choices[index] || correctAnswer
+  }
+
+  const matchedChoice = choices.find((choice) => choice === correctAnswer)
+  return matchedChoice || correctAnswer
+}
+
 const convertQuizToGeneratedJson = (quiz: Quiz) => ({
   title: quiz.title,
+  description: quiz.description,
   questions: quiz.questions.map((question) => ({
     question: question.text,
     type: question.type,
@@ -44,12 +76,38 @@ const convertQuizToGeneratedJson = (quiz: Quiz) => ({
   })),
 })
 
+const convertQuizToSaveRequest = (quiz: Quiz, creatorId: number): SaveQuizRequest => ({
+  title: quiz.title,
+  description: quiz.description,
+  creatorId,
+  questions: quiz.questions.map((question) => {
+    const choices =
+      question.choices && question.choices.length > 0
+        ? question.choices
+        : question.answer
+          ? [question.answer]
+          : []
+
+    return {
+      questionText: question.text,
+      timeLimit: null,
+      correctAnswer: question.answer,
+      choices: choices.map((choice) => ({
+        choiceText: choice,
+      })),
+    }
+  }),
+})
+
 function Lobby() {
   const roomCode = useRoomStore((state) => state.roomId) || '----'
+  const user = useAuthStore((state) => state.user)
   const [players, setPlayers] = useState<Player[]>([])
   const [error, setError] = useState('')
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [quizGeneratedMessage, setQuizGeneratedMessage] = useState('')
+  const [saveMessage, setSaveMessage] = useState('')
+  const [isSavingQuiz, setIsSavingQuiz] = useState(false)
   const [generatedQuiz, setGeneratedQuiz] = useState<Quiz | null>(null)
   const setQuiz = useGameStore((state) => state.setQuiz)
 
@@ -137,6 +195,38 @@ function Lobby() {
     setQuiz(nextQuiz)
   }
 
+  const handleSaveQuiz = async () => {
+    if (!generatedQuiz) {
+      setError('Generate a quiz first.')
+      return
+    }
+
+    if (!user?.id) {
+      setError('You must be signed in to save a quiz.')
+      return
+    }
+
+    setIsSavingQuiz(true)
+    setError('')
+    setSaveMessage('')
+
+    try {
+      const payload = convertQuizToSaveRequest(generatedQuiz, user.id)
+      const response = await createQuiz(payload)
+      const savedQuiz = response.data as { id?: number; title?: string }
+      setSaveMessage(
+        savedQuiz?.id
+          ? `✓ Quiz saved with id ${savedQuiz.id}`
+          : '✓ Quiz saved successfully'
+      )
+    } catch (err) {
+      console.error('Error saving quiz:', err)
+      setError('Failed to save quiz. Please try again.')
+    } finally {
+      setIsSavingQuiz(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-slate-100 p-8">
       <header className="mb-6 flex items-center justify-between rounded-2xl bg-white/90 px-6 py-4 shadow-sm ring-1 ring-slate-200">
@@ -156,6 +246,11 @@ function Lobby() {
           {quizGeneratedMessage && (
             <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
               {quizGeneratedMessage}
+            </div>
+          )}
+          {saveMessage && (
+            <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
+              {saveMessage}
             </div>
           )}
           <PlayerList players={displayedPlayers} />
@@ -181,11 +276,19 @@ function Lobby() {
             <>
               <GeneratedQuizEditor quiz={generatedQuiz} onChange={handleQuizChange} />
               <div className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-sm">
-                <div className="mb-3 flex items-center justify-between">
+                <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <h2 className="text-lg font-semibold text-slate-900">Raw JSON Preview</h2>
                     <p className="text-sm text-slate-600">This is the quiz object you can expect Ollama to return.</p>
                   </div>
+                  <button
+                    type="button"
+                    onClick={handleSaveQuiz}
+                    disabled={isSavingQuiz}
+                    className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
+                  >
+                    {isSavingQuiz ? 'Saving...' : 'Save Quiz'}
+                  </button>
                 </div>
                 <pre className="overflow-auto rounded-xl bg-slate-950 p-4 text-xs text-slate-100">
                   {JSON.stringify(convertQuizToGeneratedJson(generatedQuiz), null, 2)}

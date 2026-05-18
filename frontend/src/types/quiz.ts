@@ -20,6 +20,7 @@ export type DifficultyLevel = (typeof DifficultyLevel)[keyof typeof DifficultyLe
 export interface Quiz {
   id: string;
   title: string;
+  description: string;
   questions: Question[];
 }
 
@@ -52,5 +53,24 @@ export interface AiQuizGenerationRequest {
 
 export interface AiQuizGenerationResponse {
   title: string;
+  description: string;
   questions: GeneratedAiQuestion[];
+}
+
+export interface SaveQuizChoiceRequest {
+  choiceText: string;
+}
+
+export interface SaveQuizQuestionRequest {
+  questionText: string;
+  timeLimit?: number | null;
+  correctAnswer?: string;
+  choices: SaveQuizChoiceRequest[];
+}
+
+export interface SaveQuizRequest {
+  title: string;
+  description: string;
+  creatorId: number;
+  questions: SaveQuizQuestionRequest[];
 }

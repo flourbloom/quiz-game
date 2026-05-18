@@ -95,6 +95,13 @@ export default function GeneratedQuizEditor({
     closeEditor()
   }
 
+  const updateQuizField = (field: 'title' | 'description', value: string) => {
+    onChange({
+      ...quiz,
+      [field]: value,
+    })
+  }
+
   const updateDraft = (
     field: keyof EditableQuestion,
     value: string
@@ -152,6 +159,29 @@ export default function GeneratedQuizEditor({
         <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
           {quiz.questions.length} questions
         </div>
+      </div>
+
+      <div className="mb-4 grid gap-3 rounded-xl border border-slate-200 bg-white p-4">
+        <label className="grid gap-1 text-sm text-slate-700">
+          Title
+
+          <input
+            value={quiz.title}
+            onChange={(e) => updateQuizField('title', e.target.value)}
+            className="rounded-lg border border-slate-300 px-3 py-2"
+          />
+        </label>
+
+        <label className="grid gap-1 text-sm text-slate-700">
+          Description
+
+          <textarea
+            value={quiz.description}
+            onChange={(e) => updateQuizField('description', e.target.value)}
+            rows={3}
+            className="rounded-lg border border-slate-300 px-3 py-2"
+          />
+        </label>
       </div>
 
       <div className="space-y-3">

@@ -261,6 +261,7 @@ public class AiQuizService {
                 Requirements:
                 - Generate questions in JSON format matching this structure:
                 %s
+                - Include a concise quiz description in the field named "description"
                 - Return exactly %d questions
                 - Do not return fewer or more questions than %d
                 - Use the field name "question" for the prompt text
@@ -275,7 +276,7 @@ public class AiQuizService {
                 %s
                 
                 Return ONLY valid JSON in this format:
-                {"title": "Quiz Title", "questions": [...]}
+                {"title": "Quiz Title", "description": "Short quiz description", "questions": [...]}
                 """,
                 request.getNumberOfQuestions(),
                 request.getDifficulty().toLowerCase(),
@@ -291,15 +292,16 @@ public class AiQuizService {
             return """
                     {
                       "title": "Quiz Title",
+                                            "description": "Short quiz description",
                       "questions": [
                         {
                                                     "question": "Question text",
                           "type": "MCQ",
-                                                    "answer1": "A",
-                                                    "answer2": "B",
-                                                    "answer3": "C",
-                                                    "answer4": "D",
-                                                    "correctAnswer": "answer2",
+                                                        "answer1": "Choice 1 text",
+                                                        "answer2": "Choice 2 text",
+                                                        "answer3": "Choice 3 text",
+                                                        "answer4": "Choice 4 text",
+                                                        "correctAnswer": "Choice 2 text",
                           "difficulty": "EASY"
                         },
                         {
@@ -315,6 +317,7 @@ public class AiQuizService {
             return """
                     {
                       "title": "Quiz Title",
+                                            "description": "Short quiz description",
                       "questions": [
                         {
                                                     "question": "Question text",
@@ -329,15 +332,16 @@ public class AiQuizService {
             return """
                     {
                       "title": "Quiz Title",
+                                            "description": "Short quiz description",
                       "questions": [
                         {
                                                     "question": "Question text",
                           "type": "MCQ",
-                                                    "answer1": "A",
-                                                    "answer2": "B",
-                                                    "answer3": "C",
-                                                    "answer4": "D",
-                                                    "correctAnswer": "answer2",
+                                                        "answer1": "Choice 1 text",
+                                                        "answer2": "Choice 2 text",
+                                                        "answer3": "Choice 3 text",
+                                                        "answer4": "Choice 4 text",
+                                                        "correctAnswer": "Choice 2 text",
                           "difficulty": "EASY"
                         }
                       ]
@@ -356,8 +360,12 @@ public class AiQuizService {
     private AiQuizGenerationResponse parseAiResponse(String jsonContent) {
         try {
             String cleanJson = extractJsonPayload(jsonContent);
+            AiQuizGenerationResponse response = objectMapper.readValue(cleanJson, AiQuizGenerationResponse.class);
+            if (response.getDescription() == null || response.getDescription().isBlank()) {
+                response.setDescription("Generated quiz based on the uploaded document.");
+            }
 
-            return objectMapper.readValue(cleanJson, AiQuizGenerationResponse.class);
+            return response;
         } catch (Exception e) {
             log.error("Failed to parse AI response: {}", jsonContent, e);
             throw new BadRequestException("Failed to parse AI-generated quiz: " + e.getMessage());
