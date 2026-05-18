@@ -1,5 +1,6 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 export default function Home() {
        const stats = [
     ["10M+", "Active Players"],
@@ -28,38 +29,47 @@ export default function Home() {
 
       <section id="home" className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="inline-block bg-emerald-100 text-emerald-600 px-4 py-1 rounded-full text-sm font-medium mb-6">
-              New AI Quiz Generator
-            </span>
+  {/* LEFT SIDE */}
+  <div>
+    <span className="inline-block bg-emerald-100 text-emerald-600 px-4 py-1 rounded-full text-sm font-medium mb-6">
+      New AI Quiz Generator
+    </span>
 
-            <h1 className="text-5xl font-bold leading-tight mb-6">
-              Make Learning
-              <span className="text-emerald-500 block">Awesome!</span>
-            </h1>
+    <h1 className="text-5xl font-bold leading-tight mb-6">
+      Make Learning
+      <span className="text-emerald-500 block">Awesome!</span>
+    </h1>
 
-            <p className="text-gray-600 text-lg mb-8 max-w-xl">
-              Create, play, and share engaging quizzes with students and friends.
-            </p>
+    <p className="text-gray-600 text-lg mb-8 max-w-xl">
+      Create, play, and share engaging quizzes with students and friends.
+    </p>
 
-            <div className="flex flex-wrap gap-4 mb-8">
-              <button className="bg-emerald-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-emerald-600 transition">
-                Join Game
-              </button>
-              <button className="border border-emerald-500 text-emerald-600 px-6 py-3 rounded-full font-semibold hover:bg-emerald-50 transition">
-                Create Quiz
-              </button>
-            </div>
-          </div>
+    <div className="flex flex-wrap gap-4 mb-8">
+      <Link
+        to="/JoinGame"
+        className="bg-emerald-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-emerald-600 transition"
+      >
+        Join Game
+      </Link>
 
-          <div>
-            <img
-              src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=80"
-              alt="Students learning"
-              className="rounded-3xl shadow-2xl w-full h-[400px] object-cover"
-            />
-          </div>
-        </div>
+      <Link
+        to="/features"
+        className="border border-emerald-500 text-emerald-600 px-6 py-3 rounded-full font-semibold hover:bg-emerald-50 transition"
+      >
+        Create Quiz
+      </Link>
+    </div>
+  </div>
+
+  {/* RIGHT SIDE */}
+  <div>
+    <img
+      src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=80"
+      alt="Students learning"
+      className="rounded-3xl shadow-2xl w-full h-[400px] object-cover"
+    />
+  </div>
+</div>
       </section>
 
       <section className="max-w-6xl mx-auto px-6 py-10">

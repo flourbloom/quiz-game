@@ -1,32 +1,33 @@
+
 import React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import SeavhongImg from "../assets/Seavhong.jpg";
+import PhengrothImg from "../assets/Phengroth.jpg";
+import SorakmonyImg from "../assets/Sorakmony.jpg";
+import PanhaImg from "../assets/Panha.jpg";
 
 export default function AboutPage() {
   const teamMembers = [
     {
-      name: "Chea Sereyling",
-      role: "Founder",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+      name: "Chea Seavhong",
+      role: "Leader",
+      image: SeavhongImg,
     },
     {
-      name: "Seng Phengton",
+      name: "Seng Phengroth",
       role: "Developer",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+      image: PhengrothImg,
     },
     {
-      name: "M Sokkhdevy",
-      role: "Designer",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+      name: "Mi Sorakmony",
+      role: "Member",
+      image: SorakmonyImg,
     },
     {
-      name: "Kong Sokhetha",
-      role: "Marketing",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+      name: "Kong Sokpanha",
+      role: "Member",
+      image: PanhaImg,
     },
   ];
 
