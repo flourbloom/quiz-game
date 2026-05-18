@@ -266,8 +266,8 @@ public class AiQuizService {
                 - Do not return fewer or more questions than %d
                 - Use the field name "question" for the prompt text
                 - For MCQ questions, provide 4 distinct answers in answer1, answer2, answer3, answer4
+                - For MCQ questions, set correctAnswer to the key of the correct option: answer1, answer2, answer3, or answer4
                 - All questions must NEVER be empty and must be relevant to the document content
-                - Set correctAnswer to the exact text of the correct answer from answer1, answer2, answer3, or answer4
                 - Keep answers concise and accurate
                 - Make questions clear and educational
                 - Return ONLY valid JSON, no additional text or markdown formatting
@@ -297,11 +297,11 @@ public class AiQuizService {
                         {
                                                     "question": "Question text",
                           "type": "MCQ",
-                                                        "answer1": "Choice 1 text",
-                                                        "answer2": "Choice 2 text",
-                                                        "answer3": "Choice 3 text",
-                                                        "answer4": "Choice 4 text",
-                                                        "correctAnswer": "Choice 2 text",
+                                                    "answer1": "Choice 1 text",
+                                                    "answer2": "Choice 2 text",
+                                                    "answer3": "Choice 3 text",
+                                                    "answer4": "Choice 4 text",
+                                                    "correctAnswer": "answer2",
                           "difficulty": "EASY"
                         },
                         {
@@ -337,11 +337,11 @@ public class AiQuizService {
                         {
                                                     "question": "Question text",
                           "type": "MCQ",
-                                                        "answer1": "Choice 1 text",
-                                                        "answer2": "Choice 2 text",
-                                                        "answer3": "Choice 3 text",
-                                                        "answer4": "Choice 4 text",
-                                                        "correctAnswer": "Choice 2 text",
+                                                    "answer1": "Choice 1 text",
+                                                    "answer2": "Choice 2 text",
+                                                    "answer3": "Choice 3 text",
+                                                    "answer4": "Choice 4 text",
+                                                    "correctAnswer": "answer2",
                           "difficulty": "EASY"
                         }
                       ]
@@ -361,6 +361,7 @@ public class AiQuizService {
         try {
             String cleanJson = extractJsonPayload(jsonContent);
             AiQuizGenerationResponse response = objectMapper.readValue(cleanJson, AiQuizGenerationResponse.class);
+            normalizeGeneratedQuiz(response);
             if (response.getDescription() == null || response.getDescription().isBlank()) {
                 response.setDescription("Generated quiz based on the uploaded document.");
             }
@@ -370,6 +371,70 @@ public class AiQuizService {
             log.error("Failed to parse AI response: {}", jsonContent, e);
             throw new BadRequestException("Failed to parse AI-generated quiz: " + e.getMessage());
         }
+    }
+
+    private void normalizeGeneratedQuiz(AiQuizGenerationResponse response) {
+        if (response == null || response.getQuestions() == null) {
+            return;
+        }
+
+        for (AiQuizGenerationResponse.AiQuestionDTO question : response.getQuestions()) {
+            if (question == null) {
+                continue;
+            }
+
+            if (!"MCQ".equalsIgnoreCase(question.getType())) {
+                question.setCorrectChoiceIndex(null);
+                continue;
+            }
+
+            Integer correctChoiceIndex = resolveCorrectChoiceIndex(question);
+            question.setCorrectChoiceIndex(correctChoiceIndex);
+
+            if (correctChoiceIndex != null && (question.getCorrectAnswer() == null || question.getCorrectAnswer().isBlank())) {
+                question.setCorrectAnswer("answer" + (correctChoiceIndex + 1));
+            }
+        }
+    }
+
+    private Integer resolveCorrectChoiceIndex(AiQuizGenerationResponse.AiQuestionDTO question) {
+        String correctAnswer = normalize(question.getCorrectAnswer());
+        if (correctAnswer.isEmpty()) {
+            return null;
+        }
+
+        if (correctAnswer.startsWith("answer") && correctAnswer.length() > 6) {
+            try {
+                int index = Integer.parseInt(correctAnswer.substring(6)) - 1;
+                if (index >= 0 && index < 4) {
+                    return index;
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        List<String> choices = List.of(
+                question.getAnswer1(),
+                question.getAnswer2(),
+                question.getAnswer3(),
+                question.getAnswer4()
+        );
+
+        for (int index = 0; index < choices.size(); index++) {
+            if (normalize(choices.get(index)).equals(correctAnswer)) {
+                return index;
+            }
+        }
+
+        return null;
+    }
+
+    private String normalize(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        return value.trim().toLowerCase(Locale.ROOT);
     }
 
     private AiQuizGenerationResponse enforceRequestedQuestionCount(

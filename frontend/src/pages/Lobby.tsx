@@ -27,39 +27,15 @@ const convertAiResponseToQuiz = (aiResponse: AiQuizGenerationResponse): Quiz => 
     text: question.question,
     type: question.type === QuestionType.SHORT_ANSWER ? QuestionType.SHORT_ANSWER : QuestionType.MCQ,
     choices: question.type === QuestionType.MCQ
-      ? [question.answer1, question.answer2, question.answer3, question.answer4].filter(
-          (choice): choice is string => Boolean(choice)
-        )
+      ? [question.answer1 || '', question.answer2 || '', question.answer3 || '', question.answer4 || '']
       : undefined,
-    answer: resolveCorrectAnswer(question),
+    answer: question.correctAnswer || '',
+    correctChoiceIndex: question.correctChoiceIndex,
     difficulty: question.difficulty as any,
   })),
 })
 
-const resolveCorrectAnswer = (question: AiQuizGenerationResponse['questions'][number]) => {
-  const correctAnswer = (question.correctAnswer || '').trim()
-
-  if (!correctAnswer) {
-    return ''
-  }
-
-  const choices = [question.answer1, question.answer2, question.answer3, question.answer4]
-    .map((choice) => choice?.trim() || '')
-
-  const lowerAnswer = correctAnswer.toLowerCase()
-  if (['a', 'b', 'c', 'd'].includes(lowerAnswer)) {
-    const index = lowerAnswer.charCodeAt(0) - 'a'.charCodeAt(0)
-    return choices[index] || correctAnswer
-  }
-
-  if (/^answer[1-4]$/.test(lowerAnswer)) {
-    const index = Number.parseInt(lowerAnswer.slice(6), 10) - 1
-    return choices[index] || correctAnswer
-  }
-
-  const matchedChoice = choices.find((choice) => choice === correctAnswer)
-  return matchedChoice || correctAnswer
-}
+// Client no longer derives correct answers or indices from AI text. Backend is authoritative.
 
 const convertQuizToGeneratedJson = (quiz: Quiz) => ({
   title: quiz.title,
@@ -88,14 +64,28 @@ const convertQuizToSaveRequest = (quiz: Quiz, creatorId: number): SaveQuizReques
           ? [question.answer]
           : []
 
-    return {
-      questionText: question.text,
-      timeLimit: null,
-      correctAnswer: question.answer,
-      choices: choices.map((choice) => ({
-        choiceText: choice,
-      })),
-    }
+      // Do not attempt to compute a correct choice index from text on the client.
+      // Only forward an index if the user explicitly selected one in the editor.
+      const correctAnswerField =
+        typeof question.correctChoiceIndex === 'number' && question.correctChoiceIndex >= 0
+          ? `answer${question.correctChoiceIndex + 1}`
+          : question.answer
+
+      return {
+        questionText: question.text,
+        timeLimit: null,
+        // prefer the answerN form when an index is present
+        correctAnswer: correctAnswerField,
+        correctChoiceIndex:
+          typeof question.correctChoiceIndex === 'number' && question.correctChoiceIndex >= 0
+            ? question.correctChoiceIndex
+            : undefined,
+        choices: choices.map((choice) => ({
+          choiceText: choice,
+        })),
+        // ensure difficulty is never null; default to MEDIUM
+        difficulty: question.difficulty || 'MEDIUM',
+      }
   }),
 })
 

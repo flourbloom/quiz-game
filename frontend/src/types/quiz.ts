@@ -30,6 +30,7 @@ export interface Question {
   type: QuestionType;
   choices?: string[];
   answer: string;
+  correctChoiceIndex?: number;
   difficulty?: DifficultyLevel;
 }
 
@@ -41,6 +42,7 @@ export interface GeneratedAiQuestion {
   answer3?: string;
   answer4?: string;
   correctAnswer?: string;
+  correctChoiceIndex?: number;
   difficulty?: DifficultyLevel | string;
 }
 
@@ -65,6 +67,7 @@ export interface SaveQuizQuestionRequest {
   questionText: string;
   timeLimit?: number | null;
   correctAnswer?: string;
+  correctChoiceIndex?: number;
   choices: SaveQuizChoiceRequest[];
 }
 

@@ -7,6 +7,8 @@ public class QuestionRequestDTO {
     private String questionText;
     private Integer timeLimit;
     private String correctAnswer;
+    private String difficulty;
+    private Integer correctChoiceIndex;
     private List<ChoiceRequestDTO> choices;
 
     public QuestionRequestDTO() {}
@@ -29,6 +31,14 @@ public class QuestionRequestDTO {
         return correctAnswer;
     }
 
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public Integer getCorrectChoiceIndex() {
+        return correctChoiceIndex;
+    }
+
     public List<ChoiceRequestDTO> getChoices() {
         return choices;
     }
@@ -43,6 +53,14 @@ public class QuestionRequestDTO {
 
     public void setCorrectAnswer(String correctAnswer) {
         this.correctAnswer = correctAnswer;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public void setCorrectChoiceIndex(Integer correctChoiceIndex) {
+        this.correctChoiceIndex = correctChoiceIndex;
     }
 
     public void setChoices(List<ChoiceRequestDTO> choices) {

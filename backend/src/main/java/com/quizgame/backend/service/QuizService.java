@@ -111,6 +111,7 @@ public class QuizService {
             Question question = new Question();
             question.setQuestionText(questionRequest.getQuestionText());
             question.setTimeLimit(questionRequest.getTimeLimit());
+            question.setDifficulty(questionRequest.getDifficulty());
             question.setQuiz(quiz);
             question.setChoices(mapChoices(questionRequest, question));
             questions.add(question);
@@ -127,6 +128,9 @@ public class QuizService {
 
         List<Choice> choices = new ArrayList<>();
         int correctChoiceIndex = resolveCorrectChoiceIndex(questionRequest);
+            if (correctChoiceIndex == -1) {
+                throw new IllegalArgumentException("Ambiguous correct choice for question: '" + questionRequest.getQuestionText() + "'. Please select the correct option before saving.");
+            }
         for (int index = 0; index < choiceRequests.size(); index++) {
             ChoiceRequestDTO choiceRequest = choiceRequests.get(index);
             Choice choice = new Choice();
@@ -145,22 +149,33 @@ public class QuizService {
             return -1;
         }
 
+        // Prefer an explicit index provided by the client (user selection).
+        Integer selectedIndex = questionRequest.getCorrectChoiceIndex();
+        if (selectedIndex != null && selectedIndex >= 0 && selectedIndex < choiceRequests.size()) {
+            return selectedIndex;
+        }
+
+        // Otherwise, attempt to resolve from the AI-provided correctAnswer text on the server.
         String correctAnswer = normalize(questionRequest.getCorrectAnswer());
         if (correctAnswer.isEmpty()) {
             return choiceRequests.size() == 1 ? 0 : -1;
         }
 
-        if (correctAnswer.matches("[abcd]")) {
+        // handle letter aliases like 'a', 'b', ...
+        if (correctAnswer.length() == 1 && correctAnswer.charAt(0) >= 'a' && correctAnswer.charAt(0) <= 'z') {
             int aliasIndex = correctAnswer.charAt(0) - 'a';
             if (aliasIndex >= 0 && aliasIndex < choiceRequests.size()) {
                 return aliasIndex;
             }
         }
 
-        if (correctAnswer.matches("answer[1-4]")) {
-            int aliasIndex = Integer.parseInt(correctAnswer.substring(6)) - 1;
-            if (aliasIndex >= 0 && aliasIndex < choiceRequests.size()) {
-                return aliasIndex;
+        if (correctAnswer.startsWith("answer") && correctAnswer.length() > 6) {
+            try {
+                int aliasIndex = Integer.parseInt(correctAnswer.substring(6)) - 1;
+                if (aliasIndex >= 0 && aliasIndex < choiceRequests.size()) {
+                    return aliasIndex;
+                }
+            } catch (NumberFormatException ignored) {
             }
         }
 

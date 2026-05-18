@@ -31,6 +31,7 @@ public class AiQuizGenerationResponse {
         private String answer4;
         @JsonAlias({"answer", "correctChoice", "correct_answer"})
         private String correctAnswer;
+        private Integer correctChoiceIndex;
         private String difficulty;
     }
 }
