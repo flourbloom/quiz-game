@@ -9,6 +9,7 @@ import Lobby from '../pages/Lobby'
 import GameRoom from '../pages/GameRoom'
 import Results from '../pages/Results'
 import Profile from '../pages/Profile'
+import Auth from '../pages/Auth'
 
 const AppRoutes = () => (
   <Routes>
@@ -22,6 +23,7 @@ const AppRoutes = () => (
     <Route path="/game" element={<GameRoom />} />
     <Route path="/results" element={<Results />} />
     <Route path="/profile" element={<Profile />} />
+    <Route path="/auth" element={<Auth />} />
   </Routes>
 )
 

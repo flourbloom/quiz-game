@@ -21,6 +21,9 @@ public class AuthService {
     }
 
     public AuthResponse register(AuthRegisterRequest request) {
+        if (request.getName() == null || request.getName().isBlank()) {
+            throw new BadRequestException("Name is required");
+        }
         if (request.getEmail() == null || request.getEmail().isBlank()) {
             throw new BadRequestException("Email is required");
         }

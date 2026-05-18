@@ -30,6 +30,9 @@ function HomePage() {
           <Link className="rounded border px-4 py-2" to="/profile">
             Profile
           </Link>
+          <Link className="rounded border px-4 py-2" to="/auth">
+            Auth
+          </Link>
         </div>
 
         <div className="flex flex-wrap justify-center gap-3">
