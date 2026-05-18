@@ -13,6 +13,7 @@ public class AiQuizGenerationRequest {
     private String difficulty;
     private String questionType;
     private Integer numberOfQuestions;
+    private String model;
     private String documentContent;
     private String documentFileName;
 }

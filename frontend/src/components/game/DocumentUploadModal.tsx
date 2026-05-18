@@ -27,6 +27,7 @@ export default function DocumentUploadModal({
   const [difficulty, setDifficulty] = useState<DifficultyLevel>(DifficultyLevel.MEDIUM)
   const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MCQ)
   const [numberOfQuestions, setNumberOfQuestions] = useState(10)
+  const [model, setModel] = useState('llama3.2:latest')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -73,7 +74,8 @@ export default function DocumentUploadModal({
         file,
         difficulty,
         questionType,
-        numberOfQuestions
+        numberOfQuestions,
+        model
       )
 
       if (response?.data) {
@@ -100,6 +102,7 @@ export default function DocumentUploadModal({
     setDifficulty(DifficultyLevel.MEDIUM)
     setQuestionType(QuestionType.MCQ)
     setNumberOfQuestions(10)
+    setModel('llama3.2:latest')
     setError('')
     onClose()
   }
@@ -161,6 +164,24 @@ export default function DocumentUploadModal({
             <option value={QuestionType.SHORT_ANSWER}>Short Answer</option>
             <option value="COMBINATION">Combination (Mix of both)</option>
           </select>
+        </div>
+
+        {/* Model */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Ollama Model
+          </label>
+          <input
+            type="text"
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+            disabled={loading}
+            placeholder="llama3.2:latest"
+            className="mt-2 w-full rounded border border-gray-300 px-3 py-2 text-sm disabled:opacity-50"
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            Use any model name from <span className="font-medium">ollama list</span>, such as <span className="font-medium">llama3.2:latest</span> or <span className="font-medium">llama2:latest</span>.
+          </p>
         </div>
 
         {/* Number of Questions */}

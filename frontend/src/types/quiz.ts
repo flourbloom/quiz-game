@@ -47,6 +47,7 @@ export interface AiQuizGenerationRequest {
   difficulty: DifficultyLevel;
   questionType: QuestionType;
   numberOfQuestions: number;
+  model?: string;
 }
 
 export interface AiQuizGenerationResponse {

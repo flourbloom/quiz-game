@@ -1,6 +1,7 @@
 package com.quizgame.backend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.quizgame.backend.dto.AiQuizGenerationRequest;
 import com.quizgame.backend.dto.AiQuizGenerationResponse;
 import com.quizgame.backend.exception.BadRequestException;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
@@ -44,6 +46,7 @@ public class AiQuizService {
         private String ollamaModel;
 
         private static final String OLLAMA_GENERATE_PATH = "/api/generate";
+        private static final String OLLAMA_TAGS_PATH = "/api/tags";
 
     public AiQuizGenerationResponse generateQuizFromDocument(
             AiQuizGenerationRequest request, InputStream fileInputStream, String fileName) {
@@ -57,7 +60,8 @@ public class AiQuizService {
             }
 
             // Use local Ollama for generation
-            log.info("Ollama enabled: {}. Using model: {} at {}", ollamaEnabled, ollamaModel, ollamaBaseUrl);
+            String resolvedModel = resolveModelName(request.getModel());
+            log.info("Ollama enabled: {}. Using model: {} at {}", ollamaEnabled, resolvedModel, ollamaBaseUrl);
             return generateQuizWithOllama(request, documentContent);
 
         } catch (BadRequestException e) {
@@ -126,10 +130,12 @@ public class AiQuizService {
     private AiQuizGenerationResponse generateQuizWithOllama(
             AiQuizGenerationRequest request, String documentContent) {
         try {
+            String resolvedModel = resolveModelName(request.getModel());
+            validateModelExists(resolvedModel);
             String prompt = buildPrompt(request, documentContent);
 
             Map<String, Object> requestBody = Map.of(
-                    "model", ollamaModel,
+                "model", resolvedModel,
                     "prompt", prompt,
                     "stream", false,
                     "format", "json",
@@ -168,8 +174,80 @@ public class AiQuizService {
             log.error("Error generating quiz with Ollama", e);
             throw new BadRequestException(
                     "Failed to generate quiz with Ollama. Ensure Ollama is running and model "
-                            + ollamaModel + " is installed. Error: " + e.getMessage());
+                            + resolveModelName(request.getModel()) + " is installed. Error: " + e.getMessage());
         }
+    }
+
+    private String resolveModelName(String requestedModel) {
+        if (requestedModel != null && !requestedModel.isBlank()) {
+            return requestedModel.trim();
+        }
+
+        return ollamaModel;
+    }
+
+    private void validateModelExists(String modelName) {
+        if (modelName == null || modelName.isBlank()) {
+            throw new BadRequestException("Model name cannot be empty.");
+        }
+
+        JsonNode response = fetchOllamaModels();
+        List<String> availableModels = extractAvailableModelNames(response);
+
+        if (availableModels.isEmpty()) {
+            log.warn("Could not verify Ollama models from /api/tags; proceeding with model {}", modelName);
+            return;
+        }
+
+        boolean exists = availableModels.stream()
+                .map(name -> name.toLowerCase(Locale.ROOT))
+                .anyMatch(name -> name.equals(modelName.toLowerCase(Locale.ROOT)));
+
+        if (!exists) {
+            throw new BadRequestException("Model '" + modelName + "' is not installed. Available models: "
+                    + String.join(", ", availableModels));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private JsonNode fetchOllamaModels() {
+        String endpoint = ollamaBaseUrl + OLLAMA_TAGS_PATH;
+        String responseBody = restTemplate.getForObject(endpoint, String.class);
+
+        if (responseBody == null || responseBody.isBlank()) {
+            return null;
+        }
+
+        try {
+            return objectMapper.readTree(responseBody);
+        } catch (Exception e) {
+            log.warn("Failed to parse Ollama /api/tags response", e);
+            return null;
+        }
+    }
+
+    private List<String> extractAvailableModelNames(JsonNode response) {
+        if (response == null) {
+            return List.of();
+        }
+
+        JsonNode modelsNode = response.get("models");
+        if (modelsNode == null || !modelsNode.isArray()) {
+            return List.of();
+        }
+
+        List<String> modelNames = new ArrayList<>();
+        for (JsonNode modelNode : modelsNode) {
+            JsonNode nameNode = modelNode.get("name");
+            if (nameNode != null && nameNode.isTextual()) {
+                String name = nameNode.asText().trim();
+                if (!name.isEmpty()) {
+                    modelNames.add(name);
+                }
+            }
+        }
+
+        return modelNames;
     }
 
     
@@ -183,9 +261,11 @@ public class AiQuizService {
                 Requirements:
                 - Generate questions in JSON format matching this structure:
                 %s
-                - Return exactly %d questions. Do not return fewer or more questions.
+                - Return exactly %d questions
+                - Do not return fewer or more questions than %d
                 - Use the field name "question" for the prompt text
                 - For MCQ questions, provide 4 distinct answers in answer1, answer2, answer3, answer4
+                - All questions must NEVER be empty and must be relevant to the document content
                 - Set correctAnswer to the exact text of the correct answer from answer1, answer2, answer3, or answer4
                 - Keep answers concise and accurate
                 - Make questions clear and educational
@@ -200,6 +280,7 @@ public class AiQuizService {
                 request.getNumberOfQuestions(),
                 request.getDifficulty().toLowerCase(),
                 questionTypeJson,
+                request.getNumberOfQuestions(),
                 request.getNumberOfQuestions(),
                 truncateContent(documentContent, 3000)
         );

@@ -12,13 +12,18 @@ export const generateQuizFromDocument = (
   file: File,
   difficulty: string,
   questionType: string,
-  numberOfQuestions: number
+  numberOfQuestions: number,
+  model?: string
 ) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('difficulty', difficulty);
   formData.append('questionType', questionType);
   formData.append('numberOfQuestions', numberOfQuestions.toString());
+
+  if (model && model.trim()) {
+    formData.append('model', model.trim());
+  }
 
   return api.post<AiQuizGenerationResponse>('/api/ai/generate-quiz', formData, {
     headers: {

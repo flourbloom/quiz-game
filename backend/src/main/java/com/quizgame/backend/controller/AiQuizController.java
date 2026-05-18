@@ -27,7 +27,8 @@ public class AiQuizController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("difficulty") String difficulty,
             @RequestParam("questionType") String questionType,
-            @RequestParam("numberOfQuestions") Integer numberOfQuestions) {
+            @RequestParam("numberOfQuestions") Integer numberOfQuestions,
+            @RequestParam(value = "model", required = false) String model) {
         log.info("Generating quiz from file: {}, difficulty: {}, type: {}, questions: {}",
             file.getOriginalFilename(), difficulty, questionType, numberOfQuestions);
 
@@ -35,6 +36,7 @@ public class AiQuizController {
             difficulty,
             questionType,
             numberOfQuestions,
+            model,
             null,
             file.getOriginalFilename()
         );
