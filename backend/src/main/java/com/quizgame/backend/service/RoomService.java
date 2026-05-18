@@ -68,7 +68,6 @@ public class RoomService {
         } else {
             User newHost = new User();
             newHost.setName(request.getHostName().trim());
-            newHost.setRole("HOST");
             host = userRepository.save(newHost);
         }
 
