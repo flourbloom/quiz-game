@@ -6,6 +6,7 @@ import SeavhongImg from "../assets/Seavhong.jpg";
 import PhengrothImg from "../assets/Phengroth.jpg";
 import SorakmonyImg from "../assets/Sorakmony.jpg";
 import PanhaImg from "../assets/Panha.jpg";
+import TeamImg from "../assets/Team.png";
 
 export default function AboutPage() {
   const teamMembers = [
@@ -96,7 +97,7 @@ export default function AboutPage() {
         <div className="relative">
           <div className="bg-white rounded-3xl shadow-2xl p-4">
             <img
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f"
+              src={TeamImg}
               alt="team"
               className="rounded-2xl w-full h-[350px] object-cover"
             />
