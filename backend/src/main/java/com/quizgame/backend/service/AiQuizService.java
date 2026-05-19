@@ -391,7 +391,8 @@ public class AiQuizService {
             Integer correctChoiceIndex = resolveCorrectChoiceIndex(question);
             question.setCorrectChoiceIndex(correctChoiceIndex);
 
-            if (correctChoiceIndex != null && (question.getCorrectAnswer() == null || question.getCorrectAnswer().isBlank())) {
+            // Always canonicalize the correctAnswer to the form "answerN" when we can
+            if (correctChoiceIndex != null) {
                 question.setCorrectAnswer("answer" + (correctChoiceIndex + 1));
             }
         }
@@ -403,6 +404,7 @@ public class AiQuizService {
             return null;
         }
 
+        // If already in answerN form, parse it
         if (correctAnswer.startsWith("answer") && correctAnswer.length() > 6) {
             try {
                 int index = Integer.parseInt(correctAnswer.substring(6)) - 1;
@@ -411,6 +413,19 @@ public class AiQuizService {
                 }
             } catch (NumberFormatException ignored) {
             }
+        }
+
+        // Handle trailing numeric IDs like "super1" or "ans2" -> map to answer index
+        try {
+            String raw = question.getCorrectAnswer() == null ? "" : question.getCorrectAnswer();
+            java.util.regex.Matcher m = java.util.regex.Pattern.compile("(\\d+)\\s*$").matcher(raw);
+            if (m.find()) {
+                int idx = Integer.parseInt(m.group(1)) - 1;
+                if (idx >= 0 && idx < 4) {
+                    return idx;
+                }
+            }
+        } catch (Exception ignored) {
         }
 
         List<String> choices = List.of(
