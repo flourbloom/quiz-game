@@ -4,7 +4,7 @@ import AboutUs from "./pages/AboutUs";
 import Features from "./pages/Features";
 import Contact from "./pages/Contact";
 import JoinGame from "./pages/JoinGame";
-
+import JoinLobby from "./pages/Lobby";
 export default function App() {
   return (
     <BrowserRouter>
@@ -14,6 +14,7 @@ export default function App() {
         <Route path="/features" element={<Features />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/JoinGame" element={<JoinGame/>} />
+        <Route path="/lobby" element={<JoinLobby />} />
       </Routes>
     </BrowserRouter>
   );
