@@ -1,8 +1,8 @@
 // src/api/game.ts
-import axios from 'axios';
+import api from './http';
 
 export const startGame = (roomId: string) =>
-  axios.post(`/api/game/start`, { roomId });
+  api.post(`/api/game/start`, { roomId });
 
 export const submitAnswer = (gameId: string, answer: string) =>
-  axios.post(`/api/game/${gameId}/answer`, { answer });
+  api.post(`/api/game/${gameId}/answer`, { answer });

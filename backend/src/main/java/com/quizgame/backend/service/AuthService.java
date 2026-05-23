@@ -21,6 +21,9 @@ public class AuthService {
     }
 
     public AuthResponse register(AuthRegisterRequest request) {
+        if (request.getName() == null || request.getName().isBlank()) {
+            throw new BadRequestException("Name is required");
+        }
         if (request.getEmail() == null || request.getEmail().isBlank()) {
             throw new BadRequestException("Email is required");
         }
@@ -35,10 +38,8 @@ public class AuthService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole() != null && !request.getRole().isBlank() ? request.getRole() : "HOST");
-
         User saved = userRepository.save(user);
-        return new AuthResponse(saved.getId(), saved.getName(), saved.getEmail(), saved.getRole());
+        return new AuthResponse(saved.getId(), saved.getName(), saved.getEmail());
     }
 
     public AuthResponse login(AuthLoginRequest request) {
@@ -56,6 +57,6 @@ public class AuthService {
             throw new BadRequestException("Invalid credentials");
         }
 
-        return new AuthResponse(user.getId(), user.getName(), user.getEmail(), user.getRole());
+        return new AuthResponse(user.getId(), user.getName(), user.getEmail());
     }
 }

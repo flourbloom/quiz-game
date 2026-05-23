@@ -1,11 +1,68 @@
-import React from "react";
-
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function JoinGame() {
+  const [pin, setPin] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleJoin = async (e) => {
+    e.preventDefault();
+
+    setError("");
+
+    // Validation
+    if (!pin || !nickname) {
+      setError("Please fill all fields");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // API CALL
+      const response = await fetch(
+        "http://localhost:8080/api/rooms/join",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            roomCode: pin,
+            nickname: nickname,
+          }),
+        }
+      );
+
+      // Error handling
+      if (!response.ok) {
+        throw new Error("Failed to join room");
+      }
+
+      const data = await response.json();
+
+      console.log("Joined room:", data);
+
+      // Navigate to lobby page
+      navigate(`/lobby/${pin}`, {
+        state: {
+          nickname,
+          playerId: data.playerId,
+        },
+      });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
-    
-
       <div className="min-h-screen bg-gradient-to-r from-blue-500 to-green-400 flex items-center justify-center px-6 py-16 overflow-hidden relative">
         {/* Glow Effects */}
         <div className="absolute top-32 right-40 w-32 h-32 bg-yellow-300 opacity-20 blur-3xl rounded-full"></div>
@@ -32,7 +89,10 @@ export default function JoinGame() {
             </p>
 
             {/* FORM */}
-            <form className="mt-10 space-y-6">
+            <form
+              onSubmit={handleJoin}
+              className="mt-10 space-y-6"
+            >
               {/* PIN */}
               <div>
                 <label className="block text-sm font-semibold text-green-500 mb-2">
@@ -42,6 +102,10 @@ export default function JoinGame() {
                 <input
                   type="text"
                   placeholder="Enter 6-digit PIN"
+                  value={pin}
+                  onChange={(e) =>
+                    setPin(e.target.value)
+                  }
                   className="w-full border border-gray-200 rounded-xl px-5 py-4 outline-none focus:ring-2 focus:ring-green-400 text-center text-lg"
                 />
               </div>
@@ -55,22 +119,37 @@ export default function JoinGame() {
                 <input
                   type="text"
                   placeholder="Enter your nickname"
+                  value={nickname}
+                  onChange={(e) =>
+                    setNickname(e.target.value)
+                  }
                   className="w-full border border-gray-200 rounded-xl px-5 py-4 outline-none focus:ring-2 focus:ring-green-400"
                 />
               </div>
 
+              {/* Error Message */}
+              {error && (
+                <p className="text-red-500 text-sm text-center">
+                  {error}
+                </p>
+              )}
+
               {/* Button */}
               <button
                 type="submit"
-                className="w-full bg-green-500 hover:bg-green-600 transition text-white font-semibold py-4 rounded-xl shadow-md hover:scale-[1.02]"
+                disabled={loading}
+                className="w-full bg-green-500 hover:bg-green-600 transition text-white font-semibold py-4 rounded-xl shadow-md hover:scale-[1.02] disabled:opacity-50"
               >
-                Join Game
+                {loading
+                  ? "Joining..."
+                  : "Join Game"}
               </button>
             </form>
 
             {/* Footer text */}
             <p className="text-gray-400 text-sm text-center mt-8">
-              Don’t have a PIN? Ask your host to start a new game
+              Don’t have a PIN? Ask your host to
+              start a new game
             </p>
           </div>
 

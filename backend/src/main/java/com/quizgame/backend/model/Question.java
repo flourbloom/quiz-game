@@ -20,6 +20,7 @@ public class Question {
     private String questionText;
 
     private Integer timeLimit;
+    private String difficulty;
 
     @ManyToOne
     @JoinColumn(name = "quiz_id")

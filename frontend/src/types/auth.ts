@@ -1,15 +1,16 @@
-// src/types/auth.ts
 export interface AuthResponse {
-  token: string;
-  username: string;
+  id: number;
+  name: string;
+  email: string;
 }
 
 export interface AuthLoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
 export interface AuthRegisterRequest {
-  username: string;
+  name: string;
+  email: string;
   password: string;
 }

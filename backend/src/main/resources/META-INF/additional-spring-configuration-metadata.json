@@ -1,0 +1,43 @@
+{
+  "properties": [
+    {
+      "name": "ai.provider",
+      "type": "java.lang.String",
+      "description": "AI provider to use: gemini or ollama."
+    },
+    {
+      "name": "ollama.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Ollama fallback is enabled when Gemini quota is exhausted."
+    },
+    {
+      "name": "ollama.base-url",
+      "type": "java.lang.String",
+      "description": "Base URL for local Ollama server."
+    },
+    {
+      "name": "ollama.model",
+      "type": "java.lang.String",
+      "description": "Ollama model name used for local generation."
+    },
+    {
+      "name": "ai.ollama.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable local Ollama provider",
+      "defaultValue": true
+    },
+    {
+      "name": "ai.ollama.base-url",
+      "type": "java.lang.String",
+      "description": "Base URL for local Ollama server",
+      "defaultValue": "http://localhost:11434"
+    },
+    {
+      "name": "ai.ollama.model",
+      "type": "java.lang.String",
+      "description": "Ollama model tag to use (e.g. llama3.2:latest)",
+      "defaultValue": "llama3.2:latest"
+    }
+  ]
+}
+

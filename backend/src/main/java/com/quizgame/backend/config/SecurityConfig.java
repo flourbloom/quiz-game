@@ -15,7 +15,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable()) // disable to streamline testing API requests, particularly when using tools like Postman
             .authorizeHttpRequests(auth -> auth
                 .anyRequest().permitAll()
             );

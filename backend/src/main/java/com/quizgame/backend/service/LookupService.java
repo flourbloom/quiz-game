@@ -177,7 +177,6 @@ public class LookupService {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole(),
                 user.getCreatedAt()
         );
     }

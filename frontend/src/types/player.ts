@@ -1,6 +1,7 @@
 // src/types/player.ts
 export interface Player {
-  id: string;
-  name: string;
+  id: number;
+  nickname: string;
   score: number;
+  host: boolean;
 }

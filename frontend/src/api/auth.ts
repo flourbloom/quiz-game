@@ -1,8 +1,12 @@
-// src/api/auth.ts
-import axios from 'axios';
+import api from './http';
+import type { AuthLoginRequest, AuthRegisterRequest, AuthResponse } from '../types/auth';
 
-export const login = (data: { username: string; password: string }) =>
-  axios.post('/api/auth/login', data);
+export const login = async (data: AuthLoginRequest) => {
+  const response = await api.post<AuthResponse>('/api/auth/login', data);
+  return response.data;
+};
 
-export const register = (data: { username: string; password: string }) =>
-  axios.post('/api/auth/register', data);
+export const register = async (data: AuthRegisterRequest) => {
+  const response = await api.post<AuthResponse>('/api/auth/register', data);
+  return response.data;
+};
