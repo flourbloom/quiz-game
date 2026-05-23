@@ -10,11 +10,13 @@ export default function Navbar() {
     try {
       const storedUser = localStorage.getItem("user");
 
+      console.log("Navbar user:", storedUser);
+
       if (storedUser && storedUser !== "undefined") {
         setUser(JSON.parse(storedUser));
       }
     } catch (error) {
-      console.log("Invalid user");
+      console.log("Invalid user data");
 
       localStorage.removeItem("user");
     }
@@ -68,21 +70,13 @@ export default function Navbar() {
               {/* USER NAME */}
               <div className="hidden md:flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full">
                 <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold">
-                  {user.name ? user.name.charAt(0) : "U"}
+                  {user?.fullName ? user.fullName.charAt(0).toUpperCase() : "U"}
                 </div>
 
                 <span className="text-sm font-medium text-gray-700">
-                  {user.name || user.username}
+                  {user?.fullName || "User"}
                 </span>
               </div>
-
-              {/* CREATE QUIZ */}
-              <Link
-                to="/create-quiz"
-                className="bg-emerald-500 text-white px-5 py-2 rounded-full font-medium hover:bg-emerald-600 transition"
-              >
-                Create Quiz
-              </Link>
 
               {/* LOGOUT */}
               <button

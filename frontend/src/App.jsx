@@ -6,6 +6,7 @@ import Contact from "./pages/Contact";
 import JoinGame from "./pages/JoinGame";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import HostDashboard from "./pages/Dashboard";
 
 export default function App() {
   return (
@@ -16,8 +17,9 @@ export default function App() {
         <Route path="/features" element={<Features />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/JoinGame" element={<JoinGame/>} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/signup" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<HostDashboard />} />
       </Routes>
     </BrowserRouter>
   );
