@@ -7,6 +7,9 @@ import JoinGame from "./pages/JoinGame";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import HostDashboard from "./pages/Dashboard";
+import AnswerRes from "./pages/AnswerRes";
+import LeaderboardPage from "./pages/Leaderboard";
+import Question from "./pages/GameRoom";
 
 export default function App() {
   return (
@@ -20,6 +23,10 @@ export default function App() {
         <Route path="/signup" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<HostDashboard />} />
+        <Route path="/answer-result" element={<AnswerRes />} />
+        <Route path="/results" element={<AnswerRes />} />
+        <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="/question" element={<Question />} />
       </Routes>
     </BrowserRouter>
   );
