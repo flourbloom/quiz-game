@@ -73,9 +73,11 @@ export default function JoinGame() {
           {/* LEFT CARD */}
           <div className="bg-white rounded-3xl shadow-2xl p-10 max-w-md mx-auto w-full">
             {/* Icon */}
+            
             <div className="flex justify-center mb-6">
-              <div className="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center text-white text-2xl shadow-lg">
-                🎮
+              
+              <div className="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+                Q
               </div>
             </div>
 
@@ -155,11 +157,7 @@ export default function JoinGame() {
 
           {/* RIGHT ILLUSTRATION */}
           <div className="hidden md:flex justify-center relative">
-            {/* Trophy */}
-            <div className="absolute top-0 right-28 w-44 h-44 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <span className="text-8xl">🏆</span>
-            </div>
-
+            <div className="w-96 h-96 rounded-full bg-gradient-to-r from-pink-400 to-yellow-400 opacity-30 blur-3xl absolute -top-10 -right-10"></div>
             {/* Phone */}
             <div className="relative mt-28">
               <div className="w-56 h-[440px] rounded-[45px] border-4 border-white/40 bg-white/20 backdrop-blur-md shadow-2xl flex flex-col items-center py-8">

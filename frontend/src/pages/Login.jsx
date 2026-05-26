@@ -76,11 +76,13 @@ export default function Login() {
       <div className="bg-white w-full max-w-md rounded-[30px] border-4 border-gray-200 shadow-xl p-8">
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center text-white">
-            💡
+          <Link to="/" className="flex items-center gap-2">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white font-bold">
+            Q
           </div>
 
           <h1 className="text-2xl font-bold text-gray-800">QuizUp</h1>
+          </Link>
         </div>
 
         {/* Heading */}
@@ -139,7 +141,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green-500 hover:bg-green-600 transition text-white font-semibold py-4 rounded-xl shadow-lg hover:scale-[1.01] disabled:opacity-50"
+            className="w-full bg-emerald-500 hover:bg-emerald-600 transition text-white font-semibold py-4 rounded-xl shadow-lg hover:scale-[1.01] disabled:opacity-50"
           >
             {loading ? "Logging In..." : "Log In"}
           </button>
@@ -148,7 +150,7 @@ export default function Login() {
         {/* REGISTER */}
         <p className="text-center text-gray-500 mt-8">
           Don’t have an account?{" "}
-          <Link to="/signup" className="text-green-500 font-semibold">
+          <Link to="/signup" className="text-emerald-500 font-semibold">
             Sign Up
           </Link>
         </p>

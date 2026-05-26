@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 export default function Contact() {
+  const token = localStorage.getItem("token");
   return (
     <>
       <Navbar />
@@ -184,9 +185,22 @@ export default function Contact() {
               way to learn.
             </p>
 
-            <button className="bg-white text-green-600 px-8 py-4 rounded-xl font-semibold shadow-lg hover:scale-105 transition relative z-10">
-              Get Started
-            </button>
+            <button
+            onClick={() => {
+              if (token) {
+                navigate(
+                  "/create-quiz"
+                );
+              } else {
+                navigate("/signup");
+              }
+            }}
+            className="bg-white text-emerald-600 px-8 py-3 rounded-full font-semibold"
+          >
+            {token
+              ? "Create Your Quiz"
+              : "Get Started for Free"}
+          </button>
           </div>
         </section>
       </div>
