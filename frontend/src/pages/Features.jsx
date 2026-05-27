@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Users,
   Trophy,
@@ -14,6 +15,7 @@ export default function FeaturesPage() {
   // CHECK LOGIN
   const token =
     localStorage.getItem("token");
+  const navigate = useNavigate();
 
   const features = [
     {
@@ -129,23 +131,19 @@ export default function FeaturesPage() {
           <button
             onClick={() => {
               if (token) {
-                navigate(
-                  "/create-quiz"
-                );
+                navigate("/create-quiz");
               } else {
                 navigate("/signup");
               }
             }}
             className="bg-white text-emerald-600 px-8 py-3 rounded-full font-semibold"
           >
-            {token
-              ? "Create Your Quiz"
-              : "Get Started for Free"}
+            {token ? "Create Your Quiz" : "Get Started for Free"}
           </button>
         </div>
-        </div>
-        <Footer />
       </div>
-    </>
+
+      <Footer />
+    </div>
   );
 }

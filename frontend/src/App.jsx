@@ -14,7 +14,6 @@ import LobbyPlayer from "./pages/LobbyPlayer";
 import LobbyHost from "./pages/LobbyHost";
 import GameRoom from "./pages/GameRoom";
 import HostLiveGame from "./pages/HostLiveGame";
-import Results from "./pages/Results";
 
 export default function App() {
   return (
@@ -32,7 +31,6 @@ export default function App() {
         <Route path="/game" element={<GameRoom />} />
         <Route path="/host-live-game" element={<HostLiveGame />} />
         <Route path="/host-live-game/:pin" element={<HostLiveGame />} />
-        <Route path="/results" element={<Results />} />
         <Route path="/signup" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<HostDashboard />} />
