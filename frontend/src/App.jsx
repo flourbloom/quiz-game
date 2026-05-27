@@ -9,7 +9,6 @@ import Login from "./pages/Login";
 import HostDashboard from "./pages/Dashboard";
 import AnswerRes from "./pages/AnswerRes";
 import LeaderboardPage from "./pages/Leaderboard";
-import Question from "./pages/GameRoom";
 import LobbyPlayer from "./pages/LobbyPlayer";
 import LobbyHost from "./pages/LobbyHost";
 import GameRoom from "./pages/GameRoom";
@@ -28,16 +27,14 @@ export default function App() {
         <Route path="/lobby/:pin" element={<LobbyPlayer />} />
         <Route path="/lobby-host" element={<LobbyHost />} />
         <Route path="/lobby-host/:pin" element={<LobbyHost />} />
-        <Route path="/game" element={<GameRoom />} />
+        <Route path="/game" element={<GameRoom />} /> 
         <Route path="/host-live-game" element={<HostLiveGame />} />
         <Route path="/host-live-game/:pin" element={<HostLiveGame />} />
         <Route path="/signup" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<HostDashboard />} />
-        <Route path="/answer-result" element={<AnswerRes />} />
         <Route path="/results" element={<AnswerRes />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
-        <Route path="/question" element={<Question />} />
       </Routes>
     </BrowserRouter>
   );
