@@ -11,6 +11,10 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 export default function FeaturesPage() {
+  // CHECK LOGIN
+  const token =
+    localStorage.getItem("token");
+
   const features = [
     {
       icon: <Users className="w-6 h-6 text-purple-500" />,
@@ -51,10 +55,11 @@ export default function FeaturesPage() {
   ];
 
   return (
-    <div className="bg-[#f7f7f7] min-h-screen py-16 px-6">
-        <Navbar />
-      {/* HEADER */}
-      <div className="max-w-4xl mx-auto text-center">
+    <>
+      <Navbar />
+      <div className="bg-[#f7f7f7] min-h-screen pt-24 pb-16 px-6">
+        {/* HEADER */}
+        <div className="max-w-4xl mx-auto text-center">
         <span className="bg-green-100 text-green-600 px-4 py-1 rounded-full text-sm font-medium">
           All-in-one Platform
         </span>
@@ -122,12 +127,26 @@ export default function FeaturesPage() {
             transforming the way they learn and play.
           </p>
 
-          <button className="bg-white text-green-600 px-8 py-4 rounded-xl font-semibold shadow-lg hover:scale-105 transition relative z-10">
-            Get Started for Free
+          <button
+            onClick={() => {
+              if (token) {
+                navigate(
+                  "/create-quiz"
+                );
+              } else {
+                navigate("/signup");
+              }
+            }}
+            className="bg-white text-emerald-600 px-8 py-3 rounded-full font-semibold"
+          >
+            {token
+              ? "Create Your Quiz"
+              : "Get Started for Free"}
           </button>
         </div>
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }

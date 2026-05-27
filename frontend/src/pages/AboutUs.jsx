@@ -9,6 +9,8 @@ import PanhaImg from "../assets/Panha.jpg";
 import TeamImg from "../assets/Team.png";
 
 export default function AboutPage() {
+
+  const token = localStorage.getItem("token");
   const teamMembers = [
     {
       name: "Chea Seavhong",
@@ -189,8 +191,21 @@ export default function AboutPage() {
             QuizUp.
           </p>
 
-          <button className="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:scale-105 transition">
-            Get Started
+          <button
+            onClick={() => {
+              if (token) {
+                navigate(
+                  "/create-quiz"
+                );
+              } else {
+                navigate("/signup");
+              }
+            }}
+            className="bg-white text-emerald-600 px-8 py-3 rounded-full font-semibold"
+          >
+            {token
+              ? "Create Your Quiz"
+              : "Get Started for Free"}
           </button>
         </div>
       </section>
