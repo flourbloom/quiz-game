@@ -1,7 +1,3 @@
-// ================================================
-// FULLY FIXED QUIZ BUILDER
-// ================================================
-
 import React, { useRef, useState } from "react";
 
 import {
@@ -56,9 +52,9 @@ export default function QuizBuilder() {
       difficulty: "easy",
     });
 
-  // ========================================
+  
   // COVER IMAGE
-  // ========================================
+  
 
   const handleCoverUpload = (e) => {
     const file = e.target.files[0];
@@ -71,9 +67,9 @@ export default function QuizBuilder() {
     });
   };
 
-  // ========================================
+  
   // FAKE AI GENERATE
-  // ========================================
+  
 
   const handleAIImport = async (e) => {
     const file = e.target.files[0];
@@ -137,9 +133,9 @@ export default function QuizBuilder() {
     e.target.value = "";
   };
 
-  // ========================================
+  
   // SAVE QUESTION
-  // ========================================
+  
 
   const saveQuestion = () => {
     if (!newQuestion.question.trim()) {
@@ -179,9 +175,9 @@ export default function QuizBuilder() {
     setShowAddPanel(false);
   };
 
-  // ========================================
+ 
   // DELETE QUESTION
-  // ========================================
+  
 
   const deleteQuestion = () => {
     const updated = questions.filter(
@@ -193,9 +189,9 @@ export default function QuizBuilder() {
     setDeleteIndex(null);
   };
 
-  // ========================================
+ 
   // SAVE EDIT
-  // ========================================
+ 
 
   const saveEdit = () => {
     if (!editingQuestion.data.question.trim()) {
