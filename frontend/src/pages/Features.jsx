@@ -55,11 +55,10 @@ export default function FeaturesPage() {
   ];
 
   return (
-    <>
-      <Navbar />
-      <div className="bg-[#f7f7f7] min-h-screen pt-24 pb-16 px-6">
-        {/* HEADER */}
-        <div className="max-w-4xl mx-auto text-center">
+    <div className="bg-[#f8f8f8] text-gray-800 font-sans">
+        <Navbar />
+      {/* HEADER */}
+      <div className="max-w-4xl mx-auto text-center">
         <span className="bg-green-100 text-green-600 px-4 py-1 rounded-full text-sm font-medium">
           All-in-one Platform
         </span>
