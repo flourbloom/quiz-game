@@ -7,16 +7,29 @@ import JoinGame from "./pages/JoinGame";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import HostDashboard from "./pages/Dashboard";
+import LobbyPlayer from "./pages/LobbyPlayer";
+import LobbyHost from "./pages/LobbyHost";
+import GameRoom from "./pages/GameRoom";
+import HostLiveGame from "./pages/HostLiveGame";
+import Results from "./pages/Results";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<AboutUs />} />\
+        <Route path="/about" element={<AboutUs />} />
         <Route path="/features" element={<Features />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/JoinGame" element={<JoinGame/>} />
+        <Route path="/lobby" element={<LobbyPlayer />} />
+        <Route path="/lobby/:pin" element={<LobbyPlayer />} />
+        <Route path="/lobby-host" element={<LobbyHost />} />
+        <Route path="/lobby-host/:pin" element={<LobbyHost />} />
+        <Route path="/game" element={<GameRoom />} />
+        <Route path="/host-live-game" element={<HostLiveGame />} />
+        <Route path="/host-live-game/:pin" element={<HostLiveGame />} />
+        <Route path="/results" element={<Results />} />
         <Route path="/signup" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<HostDashboard />} />
